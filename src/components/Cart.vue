@@ -4,20 +4,16 @@
             <h5 class="card-title">Your Cart</h5>
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                An item
-                <span class="badge badge-primary badge-pill">1</span>
+            <li v-for="item in cart" :key="item.id"
+                class="list-group-item d-flex justify-content-between align-items-center">
+                {{ item.name }}
+                <span class="badge badge-primary badge-pill">{{ item.quantity }}</span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                A second item
-                <span class="badge badge-primary badge-pill">1</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                A third item
-                <span class="badge badge-primary badge-pill">1</span>
+            <li v-if="totalPrice > 0" class="list-group-item d-flex justify-content-between align-items-center">
+                Price <b>${{ totalPrice }}</b>
             </li>
         </ul>
-        
+
         <div class="card-body">
             <router-link to="/shop" class="btn btn-primary btn-block">Checkout</router-link>
         </div>
@@ -25,7 +21,20 @@
 </template>
 
 <script>
+
+import { mapState } from "vuex"
+
 export default {
-    
+    name: 'Cart',
+    computed: {
+        ...mapState({
+            cart: state => state.cart.cart
+        }),
+        totalPrice() {
+            return this.cart.reduce((total, next) => {
+                return total + (next.quantity * next.price);
+            }, 0);
+        }
+    }
 }
 </script>
